@@ -6,26 +6,26 @@ const search = reactive({
   city: '',
   country: ''
 })
-
 const error = ref('')
+
+const emit = defineEmits(['get-weather'])
 
 const countries = [
   { code: 'US', name: 'United States' },
   { code: 'MX', name: 'Mexico' },
+  { code: 'DE', name: 'Germany' },
   { code: 'AR', name: 'Argentina' },
   { code: 'CO', name: 'Colombia' },
-  { code: 'CR', name: 'Costa Rica' },
   { code: 'ES', name: 'Spain' },
-  { code: 'PE', name: 'Peru' }
 ]
 
 const searchWeather = () => {
-  console.log('2')
   if (Object.values(search).includes('')) {
     error.value = 'All fields are required'
     return
   }
   error.value = ''
+  emit('get-weather', search)
 }
 </script>
 <template>
