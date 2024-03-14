@@ -4,12 +4,14 @@ import { computed, ref } from 'vue';
 export default function useWeather() {
   const weather = ref({});
   const loading = ref(false);
+  const error = ref('');
 
   const getWeather = async ({ city, country }) => {
     const key = import.meta.env.VITE_API_KEY;
     loading.value = true;
     weather.value = {};
-    const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city},${country}&limit=1&appid=${key}`;
+    error.value = '';
+    const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city},${country}&limit=1&appid=${key}`;
     try {
       const { data } = await axios(geoUrl);
       const { lat, lon } = data[0];
@@ -17,8 +19,8 @@ export default function useWeather() {
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`;
       const { data: weatherData } = await axios(weatherUrl);
       weather.value = weatherData;
-    } catch (error) {
-      console.log(error);
+    } catch {
+      error.value = 'City not found';
     } finally {
       loading.value = false;
     }
@@ -31,5 +33,6 @@ export default function useWeather() {
     weather,
     showWeather,
     loading,
+    error,
   };
 }
